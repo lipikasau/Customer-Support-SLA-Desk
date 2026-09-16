@@ -15,10 +15,10 @@ export default function NewTicketModal({ onClose }: NewTicketModalProps) {
   const [policyId, setPolicyId] = useState('');
 
   // Fetch policies to populate dropdown
-  const { data: policies } = useQuery({
+  const { data: policies, error } = useQuery({
     queryKey: ['sla-policies'],
     queryFn: async () => {
-      const res = await api.get('/sla-policies');
+      const res = await api.get('/sla-policies/');
       return res.data;
     }
   });
@@ -40,9 +40,7 @@ export default function NewTicketModal({ onClose }: NewTicketModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!policyId && policies?.length) {
-      setPolicyId(policies[0].id);
-    }
+    if (!policyId) return;
     createTicket.mutate();
   };
 
@@ -103,18 +101,27 @@ export default function NewTicketModal({ onClose }: NewTicketModalProps) {
               <select
                 value={policyId}
                 onChange={e => setPolicyId(e.target.value)}
+                required
                 className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
               >
-                {policies?.map((policy: any) => (
-                  <option key={policy.id} value={policy.id}>
-                    {policy.name}
-                  </option>
-                ))}
+                <option value="" disabled>Select SLA Policy</option>
+                {policies && ['Standard (24h)', 'Priority (8h)', 'Urgent (4h)', 'Critical (1h)']
+                  .map((name) => {
+                    const policy = policies.find((p: any) => p.name === name);
+                    return policy ? (
+                      <option key={policy.id} value={policy.id}>
+                        {policy.name}
+                      </option>
+                    ) : null;
+                  })}
               </select>
             </div>
           </div>
 
           <div className="pt-4 flex justify-end gap-3">
+            {error && <span className="text-red-500 text-sm">Error: {(error as any).message}</span>}
+            {!policies && !error && <span className="text-yellow-500 text-sm">Loading policies...</span>}
+            {policies && policies.length === 0 && <span className="text-yellow-500 text-sm">0 policies returned</span>}
             <button
               type="button"
               onClick={onClose}

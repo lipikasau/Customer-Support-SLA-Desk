@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import TicketList from './pages/TicketList';
 import TicketDetail from './pages/TicketDetail';
 import Dashboard from './pages/Dashboard';
+import Signup from './pages/Signup';
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/tickets" element={
             <ProtectedRoute>
               <TicketList />
