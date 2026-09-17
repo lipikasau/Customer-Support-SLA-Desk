@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { differenceInMinutes, parseISO } from 'date-fns';
 
 interface SlaBadgeProps {

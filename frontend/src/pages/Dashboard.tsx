@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useQuery } from '@tanstack/react-query';
 import { BarChart3, AlertTriangle, ShieldCheck } from 'lucide-react';
 import api from '../api/client';
